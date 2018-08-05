@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "parcel public/index.html"
+    "start": "parcel public/index.html",
+    "build": "rm -rf build && parcel build public/index.html -d build"
   },
   "devDependencies": {
     "babel-plugin-transform-class-properties": "^6.24.1",
