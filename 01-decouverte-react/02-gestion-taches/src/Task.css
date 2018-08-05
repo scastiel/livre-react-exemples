@@ -1,0 +1,4 @@
+.task.task--done {
+  color: darkgray;
+  text-decoration: line-through;
+}
