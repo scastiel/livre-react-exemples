@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { actions } from './store'
+import { fetchPosts } from '../services/posts/actions'
+import { openPost } from '../services/routing/actions'
 
 class Posts extends Component {
   componentDidMount() {
@@ -44,15 +45,12 @@ Posts.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  posts: state.posts,
-  error: state.error,
-  isFetching: state.isFetching
+  posts: state.posts.posts,
+  error: state.posts.error,
+  isFetching: state.posts.isFetching
 })
 
-const mapDispatchToProps = {
-  fetchPosts: actions.fetchPosts,
-  openPost: actions.openPost
-}
+const mapDispatchToProps = { fetchPosts, openPost }
 
 export default connect(
   mapStateToProps,

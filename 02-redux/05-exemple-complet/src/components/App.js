@@ -8,7 +8,7 @@ const App = ({ openedPost, closePost }) =>
   openedPost ? <SinglePost /> : <Posts />
 
 const mapStateToProps = state => ({
-  openedPost: state.openedPost
+  openedPost: state.routing.openedPost
 })
 
 export default connect(mapStateToProps)(App)

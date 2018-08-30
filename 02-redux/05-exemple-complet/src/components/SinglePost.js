@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { actions } from './store'
+import { actions } from '../store'
 import Post from './Post'
+import { closePost } from '../services/routing/actions'
+import { fetchPostDetails } from '../services/postsDetails/actions'
 
 class SinglePost extends Component {
   componentDidMount() {
@@ -28,14 +30,11 @@ class SinglePost extends Component {
 }
 
 const mapStateToProps = state => ({
-  openedPost: state.openedPost,
+  openedPost: state.routing.openedPost,
   postsDetails: state.postsDetails
 })
 
-const mapDispatchToProps = {
-  closePost: () => actions.closePost(),
-  fetchPostDetails: post => actions.fetchPostDetails(post)
-}
+const mapDispatchToProps = { closePost, fetchPostDetails }
 
 export default connect(
   mapStateToProps,

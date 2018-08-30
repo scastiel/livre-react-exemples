@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { actions } from './store'
 
-class Post extends Component {
-  componentDidMount() {}
-  renderDetails() {
-    const { details } = this.props
+const Post = ({ post, details }) => {
+  const renderDetails = () => {
     if (!details || details.isFetching) {
       return <p>Fetching post details…</p>
     } else if (details.error) {
@@ -17,15 +14,13 @@ class Post extends Component {
       return <em>No text</em>
     }
   }
-  render() {
-    const { post, details } = this.props
-    return (
-      <div>
-        <h2>{post.title}</h2>
-        {this.renderDetails()}
-      </div>
-    )
-  }
+
+  return (
+    <div>
+      <h2>{post.title}</h2>
+      {renderDetails()}
+    </div>
+  )
 }
 
 export default Post
