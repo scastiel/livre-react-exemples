@@ -1,8 +1,8 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
-import postsDetailsReducer from './services/postsDetails/reducer'
-import postsReducer from './services/posts/reducer'
-import routingReducer from './services/routing/reducer'
+import postsDetailsReducer from './postsDetails/reducer'
+import postsReducer from './posts/reducer'
+import routingReducer from './routing/reducer'
 
 const reducer = combineReducers({
   postsDetails: postsDetailsReducer,

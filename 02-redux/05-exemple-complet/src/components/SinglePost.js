@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { actions } from '../store'
+import { actions } from '../services/store'
 import Post from './Post'
 import { closePost } from '../services/routing/actions'
 import { fetchPostDetails } from '../services/postsDetails/actions'

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchPosts } from '../services/posts/actions'
 import { openPost } from '../services/routing/actions'
@@ -36,12 +35,6 @@ class Posts extends Component {
       </div>
     )
   }
-}
-
-Posts.propTypes = {
-  posts: PropTypes.array.isRequired,
-  error: PropTypes.any,
-  isFetching: PropTypes.bool.isRequired
 }
 
 const mapStateToProps = state => ({
