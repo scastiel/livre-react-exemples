@@ -5,7 +5,6 @@ const initialState = {
   loading: false,
   contacts: [],
   error: null,
-  contactToEditId: null,
   contactToEditInfos: null
 }
 
@@ -39,17 +38,17 @@ export const actions = {
     type: actionTypes.LOAD_CONTACTS_FAILURE,
     error
   }),
-  setContactToEdit: (id, contact) => ({
+  setContactToEdit: contact => ({
     type: actionTypes.SET_CONTACT_TO_EDIT,
-    id,
     contact
   }),
   updateContactToEdit: contact => ({
     type: actionTypes.UPDATE_CONTACT_TO_EDIT,
     contact
   }),
-  saveContactToEdit: () => ({
-    type: actionTypes.SAVE_CONTACT_TO_EDIT
+  saveContactToEdit: contactId => ({
+    type: actionTypes.SAVE_CONTACT_TO_EDIT,
+    contactId
   })
 }
 
@@ -64,7 +63,6 @@ const reducer = (state = initialState, action) => {
     case actionTypes.SET_CONTACT_TO_EDIT:
       return {
         ...state,
-        contactToEditId: action.id,
         contactToEditInfos: { ...action.contact }
       }
     case actionTypes.UPDATE_CONTACT_TO_EDIT:
@@ -73,9 +71,9 @@ const reducer = (state = initialState, action) => {
         contactToEditInfos: { ...action.contact }
       }
     case actionTypes.SAVE_CONTACT_TO_EDIT:
-      const { contacts, contactToEditId, contactToEditInfos } = state
-      if (contactToEditId) {
-        const contactIndex = contacts.findIndex(c => c.id === contactToEditId)
+      const { contacts, contactToEditInfos } = state
+      if (action.contactId) {
+        const contactIndex = contacts.findIndex(c => c.id === action.contactId)
         const contactsBefore = contacts.slice(0, contactIndex)
         const contactsAfter = contacts.slice(contactIndex + 1)
         return {

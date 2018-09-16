@@ -6,7 +6,11 @@ import AddContactButton from './AddContactButton'
 class ContactsListScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: 'Home',
-    headerRight: <AddContactButton navigation={navigation} />
+    headerRight: (
+      <AddContactButton
+        goToEditContact={() => navigation.push('editContact')}
+      />
+    )
   })
   goToContactDetails = contactId => {
     const { navigation } = this.props

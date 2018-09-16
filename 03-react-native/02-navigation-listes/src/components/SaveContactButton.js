@@ -4,17 +4,13 @@ import { connect } from 'react-redux'
 import { actions } from '../store'
 
 class SaveContactButton extends Component {
+  onPress = () => {
+    const { contactId, closeEdition, saveContact } = this.props
+    saveContact(contactId)
+    closeEdition()
+  }
   render() {
-    const { navigation, saveContact } = this.props
-    return (
-      <Button
-        onPress={() => {
-          saveContact()
-          navigation.pop()
-        }}
-        title="Save"
-      />
-    )
+    return <Button onPress={this.onPress} title="Save" />
   }
 }
 

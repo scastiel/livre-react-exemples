@@ -3,15 +3,21 @@ import { View, Text, Button } from 'react-native'
 import { connect } from 'react-redux'
 import EditContact from './EditContact'
 import SaveContactButton from './SaveContactButton'
+import ContactName from './ContactName'
 import { actions } from '../store'
 
 class EditContactScreen extends Component {
   static navigationOptions = ({ navigation }) => {
-    const contact = navigation.getParam('contact')
+    const contactId = navigation.getParam('contactId')
+    const closeEdition = () => navigation.pop()
     return {
-      title: contact ? contact.name : 'Create contact',
-      headerLeft: <Button onPress={() => navigation.pop()} title="Cancel" />,
-      headerRight: <SaveContactButton navigation={navigation} />
+      headerTitle: (
+        <ContactName contactId={contactId} defaultTitle="Create contact" />
+      ),
+      headerLeft: <Button onPress={closeEdition} title="Cancel" />,
+      headerRight: (
+        <SaveContactButton contactId={contactId} closeEdition={closeEdition} />
+      )
     }
   }
   render() {
@@ -19,11 +25,4 @@ class EditContactScreen extends Component {
   }
 }
 
-const mapDispatchToProps = {
-  addNewContact: actions.addNewContact
-}
-
-export default connect(
-  null,
-  mapDispatchToProps
-)(EditContactScreen)
+export default EditContactScreen

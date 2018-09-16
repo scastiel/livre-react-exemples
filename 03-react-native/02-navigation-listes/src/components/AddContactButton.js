@@ -4,17 +4,13 @@ import { connect } from 'react-redux'
 import { actions } from '../store'
 
 class AddContactButton extends Component {
+  onPress = () => {
+    const { goToEditContact, setContactToEdit } = this.props
+    setContactToEdit({ name: 'New contact' })
+    goToEditContact()
+  }
   render() {
-    const { navigation, setContactToEdit } = this.props
-    return (
-      <Button
-        onPress={() => {
-          setContactToEdit(null, { name: 'New contact' })
-          navigation.navigate('editContact')
-        }}
-        title="Add"
-      />
-    )
+    return <Button onPress={this.onPress} title="Add" />
   }
 }
 

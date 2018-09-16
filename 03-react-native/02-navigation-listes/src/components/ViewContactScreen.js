@@ -2,17 +2,23 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import ViewContact from './ViewContact'
 import EditContactButton from './EditContactButton'
+import ContactName from './ContactName'
 
 class ViewContactScreen extends Component {
-  static navigationOptions = ({ navigation }) => ({
-    title: 'Details',
-    headerRight: (
-      <EditContactButton
-        contactId={navigation.getParam('contactId')}
-        navigation={navigation}
-      />
-    )
-  })
+  static navigationOptions = ({ navigation }) => {
+    const contactId = navigation.getParam('contactId')
+    return {
+      headerTitle: <ContactName contactId={contactId} />,
+      headerRight: (
+        <EditContactButton
+          contactId={contactId}
+          goToEditContact={contactId =>
+            navigation.push('editContact', { contactId })
+          }
+        />
+      )
+    }
+  }
   render() {
     const { navigation, contacts } = this.props
     const contactId = navigation.getParam('contactId')

@@ -4,18 +4,19 @@ import { connect } from 'react-redux'
 import { actions } from '../store'
 
 class EditContactButton extends Component {
-  render() {
-    const { contactId, contacts, navigation, setContactToEdit } = this.props
+  onPress = () => {
+    const {
+      contactId,
+      contacts,
+      goToEditContact,
+      setContactToEdit
+    } = this.props
     const contact = contacts.find(c => c.id === contactId)
-    return (
-      <Button
-        onPress={() => {
-          setContactToEdit(contactId, contact)
-          navigation.navigate('editContact', { contact })
-        }}
-        title="Edit"
-      />
-    )
+    setContactToEdit(contact)
+    goToEditContact(contactId)
+  }
+  render() {
+    return <Button onPress={this.onPress} title="Edit" />
   }
 }
 
