@@ -4,14 +4,19 @@ import thunk from 'redux-thunk'
 const initialState = {
   loading: false,
   contacts: [],
-  error: null
+  error: null,
+  contactToEditId: null,
+  contactToEditInfos: null
 }
 
 const actionTypes = {
   LOAD_CONTACTS: 'LOAD_CONTACTS',
   LOAD_CONTACTS_START: 'LOAD_CONTACTS_START',
   LOAD_CONTACTS_SUCCESS: 'LOAD_CONTACTS_SUCCESS',
-  LOAD_CONTACTS_FAILURE: 'LOAD_CONTACTS_FAILURE'
+  LOAD_CONTACTS_FAILURE: 'LOAD_CONTACTS_FAILURE',
+  SET_CONTACT_TO_EDIT: 'SET_CONTACT_TO_EDIT',
+  UPDATE_CONTACT_TO_EDIT: 'UPDATE_CONTACT_TO_EDIT',
+  SAVE_CONTACT_TO_EDIT: 'SAVE_CONTACT_TO_EDIT'
 }
 
 export const actions = {
@@ -33,6 +38,18 @@ export const actions = {
   loadContactsFailure: error => ({
     type: actionTypes.LOAD_CONTACTS_FAILURE,
     error
+  }),
+  setContactToEdit: (id, contact) => ({
+    type: actionTypes.SET_CONTACT_TO_EDIT,
+    id,
+    contact
+  }),
+  updateContactToEdit: contact => ({
+    type: actionTypes.UPDATE_CONTACT_TO_EDIT,
+    contact
+  }),
+  saveContactToEdit: () => ({
+    type: actionTypes.SAVE_CONTACT_TO_EDIT
   })
 }
 
@@ -44,6 +61,33 @@ const reducer = (state = initialState, action) => {
       return { ...state, loading: false, contacts: action.contacts }
     case actionTypes.LOAD_CONTACTS_FAILURE:
       return { ...state, loading: false, error: action.error }
+    case actionTypes.SET_CONTACT_TO_EDIT:
+      return {
+        ...state,
+        contactToEditId: action.id,
+        contactToEditInfos: { ...action.contact }
+      }
+    case actionTypes.UPDATE_CONTACT_TO_EDIT:
+      return {
+        ...state,
+        contactToEditInfos: { ...action.contact }
+      }
+    case actionTypes.SAVE_CONTACT_TO_EDIT:
+      const { contacts, contactToEditId, contactToEditInfos } = state
+      if (contactToEditId) {
+        const contactIndex = contacts.findIndex(c => c.id === contactToEditId)
+        const contactsBefore = contacts.slice(0, contactIndex)
+        const contactsAfter = contacts.slice(contactIndex + 1)
+        return {
+          ...state,
+          contacts: [...contactsBefore, contactToEditInfos, ...contactsAfter]
+        }
+      } else {
+        return {
+          ...state,
+          contacts: [{ id: Math.random(), ...contactToEditInfos }, ...contacts]
+        }
+      }
     default:
       return state
   }

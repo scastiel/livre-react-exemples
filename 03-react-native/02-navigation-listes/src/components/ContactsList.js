@@ -27,7 +27,7 @@ class ContactsList extends Component {
         renderItem={({ item: contact }) => (
           <ContactListItem
             contact={contact}
-            openDetails={() => goToContactDetails(contact)}
+            openDetails={() => goToContactDetails(contact.id)}
           />
         )}
       />
