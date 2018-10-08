@@ -1,102 +1,78 @@
-import React from 'react'
-import { Formik } from 'formik'
+import React, { Component } from 'react'
+import { Formik, Field, ErrorMessage } from 'formik'
 
-const ExpenseForm = ({ onSubmit }) => {
-  return (
-    <Formik
-      initialValues={{
-        title: '',
-        date: new Date()
-          .toISOString()
-          .split('T')
-          .shift(),
-        amount: 0,
-        notes: ''
-      }}
-      validate={values => {
-        const errors = {}
-        if (!values.title) {
-          errors.title = 'Please enter a title.'
-        }
-        if (!values.date) {
-          errors.date = 'Please enter a date.'
-        }
-        if (!values.amount) {
-          errors.amount = 'Please enter a non-zero amount.'
-        }
-        return errors
-      }}
-      onSubmit={(expense, { setSubmitting, resetForm }) => {
-        onSubmit(expense, () => {
-          resetForm()
-          setSubmitting(false)
-        })
-      }}
-    >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting
-      }) => (
-        <form className="expense-form" onSubmit={handleSubmit}>
-          <label>
-            Title:
-            <input
-              type="text"
-              name="title"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.title}
-            />
-            {errors.title &&
-              touched.title && <span className="error">{errors.title}</span>}
-          </label>
-          <label>
-            Date:
-            <input
-              type="date"
-              name="date"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.date}
-            />
-            {errors.date &&
-              touched.date && <span className="error">{errors.date}</span>}
-          </label>
-          <label>
-            Amount (€):
-            <input
-              type="number"
-              name="amount"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.amount}
-            />
-            {errors.amount &&
-              touched.amount && <span className="error">{errors.amount}</span>}
-          </label>
-          <label>
-            Description:
-            <textarea
-              name="notes"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.notes}
-            />
-            {errors.notes &&
-              touched.notes && <span className="error">{errors.notes}</span>}
-          </label>
-          <button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating…' : 'Create'}
-          </button>
-        </form>
-      )}
-    </Formik>
-  )
+class ExpenseForm extends Component {
+  defaultValues = {
+    title: '',
+    date: new Date()
+      .toISOString()
+      .split('T')
+      .shift(),
+    amount: 0,
+    notes: ''
+  }
+  validate = values => {
+    const errors = {}
+    if (!values.title) {
+      errors.title = 'Please enter a title.'
+    }
+    if (!values.date) {
+      errors.date = 'Please enter a date.'
+    }
+    if (!values.amount) {
+      errors.amount = 'Please enter a non-zero amount.'
+    }
+    return errors
+  }
+  onSubmit = expense => {
+    this.props.onSubmit(expense)
+  }
+  onCancel = () => {
+    this.props.onCancel()
+  }
+  renderError(name) {
+    return <ErrorMessage name={name} component="span" className="error" />
+  }
+  render() {
+    return (
+      <Formik
+        initialValues={this.props.expense || this.defaultValues}
+        validate={this.validate}
+        onSubmit={this.onSubmit}
+      >
+        {({ handleSubmit, isSubmitting }) => (
+          <form className="expense-form" onSubmit={handleSubmit}>
+            <label>
+              Title:
+              <Field type="text" name="title" />
+              {this.renderError('title')}
+            </label>
+            <label>
+              Date:
+              <Field type="date" name="date" />
+              {this.renderError('date')}
+            </label>
+            <label>
+              Amount (€):
+              <Field type="number" name="amount" />
+              {this.renderError('amount')}
+            </label>
+            <label>
+              Notes:
+              <Field component="textarea" name="notes" />
+              {this.renderError('notes')}
+            </label>
+            <footer>
+              <button onClick={this.onCancel}>Cancel</button>
+              <button className="primary" type="submit">
+                {this.props.expense ? 'Update' : 'Create'}
+              </button>
+            </footer>
+          </form>
+        )}
+      </Formik>
+    )
+  }
 }
 
 export default ExpenseForm

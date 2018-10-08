@@ -8,14 +8,24 @@ form {
   flex-direction: column;
 }
 
-form button {
+button {
   padding: 0.5em 1em;
+  margin-right: 0.5em;
   align-self: center;
   font-size: 1em;
-  background-color: indigo;
-  color: white;
   border-style: none;
   border-radius: 0.5em;
+  background-color: whitesmoke;
+}
+
+button.primary {
+  background-color: indigo;
+  color: white;
+}
+
+li button {
+  font-size: small;
+  margin-right: 1em;
 }
 
 form label {
