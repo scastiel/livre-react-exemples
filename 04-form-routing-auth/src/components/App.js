@@ -40,30 +40,30 @@ class App extends Component {
   onUpdateExpenseCancel = () => {
     this.setState({ currentlyEditedExpense: null })
   }
-  render() {
-    if (this.state.isCreatingExpense) {
-      return (
-        <Fragment>
-          <h2>Create a new expense</h2>
-          <ExpenseForm
-            onSubmit={this.createExpense}
-            onCancel={this.onCreateExpenseCancel}
-          />
-        </Fragment>
-      )
-    }
-    if (this.state.currentlyEditedExpense) {
-      return (
-        <Fragment>
-          <h2>Edit expense</h2>
-          <ExpenseForm
-            expense={this.state.currentlyEditedExpense}
-            onSubmit={this.updateExpense}
-            onCancel={this.onUpdateExpenseCancel}
-          />
-        </Fragment>
-      )
-    }
+  renderCreateExpenseForm = () => {
+    return (
+      <Fragment>
+        <h2>Create a new expense</h2>
+        <ExpenseForm
+          onSubmit={this.createExpense}
+          onCancel={this.onCreateExpenseCancel}
+        />
+      </Fragment>
+    )
+  }
+  renderEditExpenseForm = expense => {
+    return (
+      <Fragment>
+        <h2>Edit expense</h2>
+        <ExpenseForm
+          expense={expense}
+          onSubmit={this.updateExpense}
+          onCancel={this.onUpdateExpenseCancel}
+        />
+      </Fragment>
+    )
+  }
+  renderExpensesList = () => {
     return (
       <Fragment>
         <h2>Expenses</h2>
@@ -87,6 +87,15 @@ class App extends Component {
         )}
       </Fragment>
     )
+  }
+  render() {
+    if (this.state.isCreatingExpense) {
+      return this.renderCreateExpenseForm()
+    }
+    if (this.state.currentlyEditedExpense) {
+      return this.renderEditExpenseForm(this.state.currentlyEditedExpense)
+    }
+    return this.renderExpensesList()
   }
 }
 
