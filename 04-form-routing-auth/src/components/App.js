@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import ExpenseForm from './ExpenseForm'
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+import Expense from './Expense'
 
 class App extends Component {
   state = {
@@ -26,8 +27,7 @@ class App extends Component {
           { id: this.state.nextExpenseId, ...expenseInfos },
           ...this.state.expenses
         ],
-        nextExpenseId: this.state.nextExpenseId + 1,
-        isCreatingExpense: false
+        nextExpenseId: this.state.nextExpenseId + 1
       },
       this.saveStateToLocalStorage
     )
@@ -39,8 +39,7 @@ class App extends Component {
     const expensesAfter = expenses.slice(expenseIndex + 1)
     this.setState(
       {
-        expenses: [...expensesBefore, expenseInfos, ...expensesAfter],
-        currentlyEditedExpense: null
+        expenses: [...expensesBefore, expenseInfos, ...expensesAfter]
       },
       this.saveStateToLocalStorage
     )
@@ -61,7 +60,7 @@ class App extends Component {
       </Fragment>
     )
   }
-  renderEditExpenseForm = ({ history, match }) => {
+  renderExpenseView = ({ match }) => {
     const expenseId = parseInt(match.params.id, 10)
     const expense = this.state.expenses.find(e => e.id === expenseId)
     if (!expense) {
@@ -75,19 +74,11 @@ class App extends Component {
       )
     }
     return (
-      <Fragment>
-        <h2>Edit expense</h2>
-        <ExpenseForm
-          expense={expense}
-          onSubmit={expenseInfos => {
-            this.updateExpense(expenseInfos)
-            history.push('/')
-          }}
-          onCancel={() => {
-            history.push('/')
-          }}
-        />
-      </Fragment>
+      <Expense
+        match={match}
+        expense={expense}
+        updateExpense={this.updateExpense}
+      />
     )
   }
   renderExpensesList = () => {
@@ -101,11 +92,10 @@ class App extends Component {
           <ul>
             {this.state.expenses.map(expense => (
               <li key={expense.id}>
-                <Link to={`/${expense.id}/edit`} className="button">
-                  Edit
+                <Link to={`/${expense.id}`}>
+                  {expense.title}: {expense.amount} € spent on{' '}
+                  {new Date(expense.date).toDateString()}
                 </Link>
-                {expense.title}: {expense.amount} € spent on{' '}
-                {new Date(expense.date).toDateString()}
               </li>
             ))}
           </ul>
@@ -131,7 +121,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/" render={this.renderExpensesList} />
           <Route exact path="/create" render={this.renderCreateExpenseForm} />
-          <Route exact path="/:id/edit" render={this.renderEditExpenseForm} />
+          <Route path="/:id" render={this.renderExpenseView} />
           <Route render={this.renderNotFound} />
         </Switch>
       </Router>
