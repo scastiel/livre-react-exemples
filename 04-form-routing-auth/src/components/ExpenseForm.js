@@ -27,7 +27,8 @@ class ExpenseForm extends Component {
   onSubmit = expense => {
     this.props.onSubmit(expense)
   }
-  onCancel = () => {
+  onCancel = event => {
+    event.preventDefault()
     this.props.onCancel()
   }
   renderError(name) {

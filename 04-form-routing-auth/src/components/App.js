@@ -1,15 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import ExpenseForm from './ExpenseForm'
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 
 class App extends Component {
   state = {
     expenses: [],
-    nextExpenseId: 0,
-    isCreatingExpense: false,
-    currentlyEditedExpense: null
-  }
-  showCreationForm = () => {
-    this.setState({ isCreatingExpense: true })
+    nextExpenseId: 0
   }
   createExpense = expenseInfos => {
     this.setState({
@@ -21,9 +17,6 @@ class App extends Component {
       isCreatingExpense: false
     })
   }
-  showEditionForm = expense => {
-    this.setState({ currentlyEditedExpense: expense })
-  }
   updateExpense = expenseInfos => {
     const { expenses } = this.state
     const expenseIndex = expenses.findIndex(e => e.id === expenseInfos.id)
@@ -34,32 +27,47 @@ class App extends Component {
       currentlyEditedExpense: null
     })
   }
-  onCreateExpenseCancel = () => {
-    this.setState({ isCreatingExpense: false })
-  }
-  onUpdateExpenseCancel = () => {
-    this.setState({ currentlyEditedExpense: null })
-  }
-  renderCreateExpenseForm = () => {
+  renderCreateExpenseForm = ({ history }) => {
     return (
       <Fragment>
         <h2>Create a new expense</h2>
         <ExpenseForm
-          onSubmit={this.createExpense}
-          onCancel={this.onCreateExpenseCancel}
+          onSubmit={expenseInfos => {
+            this.createExpense(expenseInfos)
+            history.push('/')
+          }}
+          onCancel={() => {
+            history.push('/')
+          }}
         />
       </Fragment>
     )
   }
-  renderEditExpenseForm = () => {
-    const expense = this.state.currentlyEditedExpense
+  renderEditExpenseForm = ({ history, match }) => {
+    const expenseId = parseInt(match.params.id, 10)
+    const expense = this.state.expenses.find(e => e.id === expenseId)
+    if (!expense) {
+      return (
+        <Fragment>
+          <p>No expense with this ID…</p>
+          <Link to="/" className="button">
+            Go back to expense list
+          </Link>
+        </Fragment>
+      )
+    }
     return (
       <Fragment>
         <h2>Edit expense</h2>
         <ExpenseForm
           expense={expense}
-          onSubmit={this.updateExpense}
-          onCancel={this.onUpdateExpenseCancel}
+          onSubmit={expenseInfos => {
+            this.updateExpense(expenseInfos)
+            history.push('/')
+          }}
+          onCancel={() => {
+            history.push('/')
+          }}
         />
       </Fragment>
     )
@@ -68,16 +76,16 @@ class App extends Component {
     return (
       <Fragment>
         <h2>Expenses</h2>
-        <button className="primary" onClick={this.showCreationForm}>
+        <Link to="/create" className="button primary">
           Create
-        </button>
+        </Link>
         {this.state.expenses.length > 0 ? (
           <ul>
             {this.state.expenses.map(expense => (
               <li key={expense.id}>
-                <button onClick={() => this.showEditionForm(expense)}>
+                <Link to={`/${expense.id}/edit`} className="button">
                   Edit
-                </button>
+                </Link>
                 {expense.title}: {expense.amount} € spent on{' '}
                 {new Date(expense.date).toDateString()}
               </li>
@@ -89,14 +97,27 @@ class App extends Component {
       </Fragment>
     )
   }
+  renderNotFound = () => {
+    return (
+      <Fragment>
+        <p>Nothing here…</p>
+        <Link to="/" className="button">
+          Go back to expense list
+        </Link>
+      </Fragment>
+    )
+  }
   render() {
-    if (this.state.isCreatingExpense) {
-      return this.renderCreateExpenseForm()
-    }
-    if (this.state.currentlyEditedExpense) {
-      return this.renderEditExpenseForm()
-    }
-    return this.renderExpensesList()
+    return (
+      <Router>
+        <Switch>
+          <Route exact path="/" render={this.renderExpensesList} />
+          <Route exact path="/create" render={this.renderCreateExpenseForm} />
+          <Route exact path="/:id/edit" render={this.renderEditExpenseForm} />
+          <Route render={this.renderNotFound} />
+        </Switch>
+      </Router>
+    )
   }
 }
 
