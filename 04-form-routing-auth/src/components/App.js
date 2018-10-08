@@ -51,7 +51,8 @@ class App extends Component {
       </Fragment>
     )
   }
-  renderEditExpenseForm = expense => {
+  renderEditExpenseForm = () => {
+    const expense = this.state.currentlyEditedExpense
     return (
       <Fragment>
         <h2>Edit expense</h2>
@@ -93,7 +94,7 @@ class App extends Component {
       return this.renderCreateExpenseForm()
     }
     if (this.state.currentlyEditedExpense) {
-      return this.renderEditExpenseForm(this.state.currentlyEditedExpense)
+      return this.renderEditExpenseForm()
     }
     return this.renderExpensesList()
   }
