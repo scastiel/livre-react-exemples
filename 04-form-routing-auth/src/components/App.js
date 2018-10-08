@@ -7,25 +7,43 @@ class App extends Component {
     expenses: [],
     nextExpenseId: 0
   }
+  saveStateToLocalStorage = () => {
+    window.localStorage.setItem('state', JSON.stringify(this.state))
+  }
+  loadStateFromLocalStorage = () => {
+    const stateJSON = window.localStorage.getItem('state')
+    if (stateJSON) {
+      this.setState(JSON.parse(stateJSON))
+    }
+  }
+  componentDidMount() {
+    this.loadStateFromLocalStorage()
+  }
   createExpense = expenseInfos => {
-    this.setState({
-      expenses: [
-        { id: this.state.nextExpenseId, ...expenseInfos },
-        ...this.state.expenses
-      ],
-      nextExpenseId: this.state.nextExpenseId + 1,
-      isCreatingExpense: false
-    })
+    this.setState(
+      {
+        expenses: [
+          { id: this.state.nextExpenseId, ...expenseInfos },
+          ...this.state.expenses
+        ],
+        nextExpenseId: this.state.nextExpenseId + 1,
+        isCreatingExpense: false
+      },
+      this.saveStateToLocalStorage
+    )
   }
   updateExpense = expenseInfos => {
     const { expenses } = this.state
     const expenseIndex = expenses.findIndex(e => e.id === expenseInfos.id)
     const expensesBefore = expenses.slice(0, expenseIndex)
     const expensesAfter = expenses.slice(expenseIndex + 1)
-    this.setState({
-      expenses: [...expensesBefore, expenseInfos, ...expensesAfter],
-      currentlyEditedExpense: null
-    })
+    this.setState(
+      {
+        expenses: [...expensesBefore, expenseInfos, ...expensesAfter],
+        currentlyEditedExpense: null
+      },
+      this.saveStateToLocalStorage
+    )
   }
   renderCreateExpenseForm = ({ history }) => {
     return (
