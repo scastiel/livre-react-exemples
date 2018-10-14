@@ -1,25 +1,51 @@
 import React, { Component, Fragment } from 'react'
+import firebase from 'firebase/app'
 import ExpenseForm from './ExpenseForm'
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  NavLink,
+  Switch,
+  Redirect
+} from 'react-router-dom'
 import Expense from './Expense'
+import Signout from './Signout'
+import SignUpForm from './SignUpForm'
+import SignInForm from './SignInForm'
 
 class App extends Component {
   state = {
     expenses: [],
-    nextExpenseId: 0
+    nextExpenseId: 0,
+    isLoadingUser: true,
+    user: null
   }
+
   saveStateToLocalStorage = () => {
     window.localStorage.setItem('state', JSON.stringify(this.state))
   }
+
   loadStateFromLocalStorage = () => {
     const stateJSON = window.localStorage.getItem('state')
     if (stateJSON) {
       this.setState(JSON.parse(stateJSON))
     }
   }
+
   componentDidMount() {
     this.loadStateFromLocalStorage()
+    this.unsubscribeAuth = firebase.auth().onAuthStateChanged(user => {
+      this.setState({ user, isLoadingUser: false })
+    })
   }
+
+  componentWillUnmount() {
+    if (this.unsubscribeAuth) {
+      this.unsubscribeAuth()
+    }
+  }
+
   createExpense = expenseInfos => {
     this.setState(
       {
@@ -32,6 +58,7 @@ class App extends Component {
       this.saveStateToLocalStorage
     )
   }
+
   updateExpense = expenseInfos => {
     const { expenses } = this.state
     const expenseIndex = expenses.findIndex(e => e.id === expenseInfos.id)
@@ -44,6 +71,7 @@ class App extends Component {
       this.saveStateToLocalStorage
     )
   }
+
   renderCreateExpenseForm = ({ history }) => {
     return (
       <Fragment>
@@ -60,6 +88,7 @@ class App extends Component {
       </Fragment>
     )
   }
+
   renderExpenseView = ({ match }) => {
     const expenseId = parseInt(match.params.id, 10)
     const expense = this.state.expenses.find(e => e.id === expenseId)
@@ -81,6 +110,7 @@ class App extends Component {
       />
     )
   }
+
   renderExpensesList = () => {
     return (
       <Fragment>
@@ -105,6 +135,7 @@ class App extends Component {
       </Fragment>
     )
   }
+
   renderNotFound = () => {
     return (
       <Fragment>
@@ -115,15 +146,106 @@ class App extends Component {
       </Fragment>
     )
   }
+
+  renderHeader = () => {
+    const { user, isLoadingUser } = this.state
+    if (isLoadingUser) {
+      return <header>Loading user info…</header>
+    }
+    if (user) {
+      return (
+        <header>
+          <span>
+            Signed in as <strong>{user.email}</strong>.
+          </span>
+          <span>
+            <NavLink to="/signout">Sign out</NavLink>
+          </span>
+        </header>
+      )
+    }
+    return (
+      <header>
+        <span>Not logged in.</span>
+        <span>
+          <NavLink to="/signin">Sign in</NavLink>{' '}
+          <NavLink to="/signup">Sign up</NavLink>
+        </span>
+      </header>
+    )
+  }
+
+  renderSignout = () => <Signout />
+  renderSignup = () => <SignUpForm />
+  renderSignin = () => <SignInForm />
+
+  signedInOnly = (render, withRedirect = true) => props => {
+    const { user, isLoadingUser } = this.state
+    if (isLoadingUser) {
+      return <p>Loading…</p>
+    }
+    if (user) {
+      return render(props)
+    }
+    return (
+      <Redirect
+        to={{
+          pathname: '/signin',
+          state: withRedirect ? { from: props.location } : null
+        }}
+      />
+    )
+  }
+
+  notSignedInOnly = render => props => {
+    const { user, isLoadingUser } = this.state
+    if (isLoadingUser) {
+      return <p>Loading…</p>
+    }
+    if (!user) {
+      return render(props)
+    }
+    return <Redirect to="/" />
+  }
+
   render() {
     return (
       <Router>
-        <Switch>
-          <Route exact path="/" render={this.renderExpensesList} />
-          <Route exact path="/create" render={this.renderCreateExpenseForm} />
-          <Route path="/:id" render={this.renderExpenseView} />
-          <Route render={this.renderNotFound} />
-        </Switch>
+        <Fragment>
+          {this.renderHeader()}
+          <Switch>
+            <Route
+              exact
+              path="/signout"
+              render={this.signedInOnly(this.renderSignout, false)}
+            />
+            <Route
+              exact
+              path="/signup"
+              render={this.notSignedInOnly(this.renderSignup)}
+            />
+            <Route
+              exact
+              path="/signin"
+              render={this.notSignedInOnly(this.renderSignin)}
+            />
+            <Route
+              exact
+              path="/"
+              render={this.signedInOnly(this.renderExpensesList)}
+            />
+            <Route
+              exact
+              path="/create"
+              render={this.signedInOnly(this.renderCreateExpenseForm)}
+            />
+            <Route
+              path="/:id"
+              render={this.signedInOnly(this.renderExpenseView)}
+            />
+            <Route render={this.renderNotFound} />
+          </Switch>
+        </Fragment>
       </Router>
     )
   }

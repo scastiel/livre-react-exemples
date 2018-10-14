@@ -3,6 +3,16 @@ body {
   font-size: 16px;
 }
 
+header {
+  margin: -0.5rem;
+  font-size: small;
+  padding: 0.5em;
+  background-color: whitesmoke;
+  color: gray;
+  display: flex;
+  justify-content: space-between;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -54,6 +64,7 @@ form textarea {
 
 form input[type='text'],
 form input[type='password'],
+form input[type='email'],
 form textarea {
   align-self: stretch;
 }
@@ -61,4 +72,8 @@ form textarea {
 form .error {
   font-size: small;
   color: red;
+}
+
+header a.active {
+  font-weight: bold;
 }
