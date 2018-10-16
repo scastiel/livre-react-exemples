@@ -17,26 +17,19 @@ import SignInForm from './SignInForm'
 class App extends Component {
   state = {
     expenses: [],
-    nextExpenseId: 0,
     isLoadingUser: true,
     user: null
   }
 
-  saveStateToLocalStorage = () => {
-    window.localStorage.setItem('state', JSON.stringify(this.state))
-  }
-
-  loadStateFromLocalStorage = () => {
-    const stateJSON = window.localStorage.getItem('state')
-    if (stateJSON) {
-      this.setState(JSON.parse(stateJSON))
-    }
-  }
-
   componentDidMount() {
-    this.loadStateFromLocalStorage()
     this.unsubscribeAuth = firebase.auth().onAuthStateChanged(user => {
       this.setState({ user, isLoadingUser: false })
+      if (user) {
+        this.subscribeToExpenses()
+      } else {
+        this.setState({ expenses: {} })
+        this.unsubscribeToExpenses()
+      }
     })
   }
 
@@ -44,32 +37,43 @@ class App extends Component {
     if (this.unsubscribeAuth) {
       this.unsubscribeAuth()
     }
+    this.unsubscribeToExpenses()
   }
 
-  createExpense = expenseInfos => {
-    this.setState(
-      {
-        expenses: [
-          { id: this.state.nextExpenseId, ...expenseInfos },
-          ...this.state.expenses
-        ],
-        nextExpenseId: this.state.nextExpenseId + 1
-      },
-      this.saveStateToLocalStorage
-    )
+  unsubscribeToExpenses() {
+    if (this.expensesRef) {
+      this.expensesRef.off()
+      this.expensesRef = null
+    }
   }
 
-  updateExpense = expenseInfos => {
-    const { expenses } = this.state
-    const expenseIndex = expenses.findIndex(e => e.id === expenseInfos.id)
-    const expensesBefore = expenses.slice(0, expenseIndex)
-    const expensesAfter = expenses.slice(expenseIndex + 1)
-    this.setState(
-      {
-        expenses: [...expensesBefore, expenseInfos, ...expensesAfter]
-      },
-      this.saveStateToLocalStorage
-    )
+  subscribeToExpenses() {
+    const uid = this.state.user.uid
+    this.expensesRef = firebase.database().ref(`users/${uid}/expenses`)
+    this.expensesRef.on('value', snapshot => {
+      const expensesById = snapshot.val() || {}
+      const expenses = Object.entries(expensesById).map(([id, expense]) => ({
+        id,
+        ...expense
+      }))
+      this.setState({ expenses })
+    })
+  }
+
+  createExpense = async expenseInfos => {
+    const uid = this.state.user.uid
+    const expenseRef = firebase
+      .database()
+      .ref(`users/${uid}/expenses`)
+      .push()
+    await expenseRef.set(expenseInfos)
+  }
+
+  updateExpense = async expenseInfos => {
+    const uid = this.state.user.uid
+    const { id, ...expense } = expenseInfos
+    const expenseRef = firebase.database().ref(`users/${uid}/expenses/${id}`)
+    await expenseRef.set(expense)
   }
 
   renderCreateExpenseForm = ({ history }) => {
@@ -77,8 +81,8 @@ class App extends Component {
       <Fragment>
         <h2>Create a new expense</h2>
         <ExpenseForm
-          onSubmit={expenseInfos => {
-            this.createExpense(expenseInfos)
+          onSubmit={async expenseInfos => {
+            await this.createExpense(expenseInfos)
             history.push('/')
           }}
           onCancel={() => {
@@ -90,7 +94,7 @@ class App extends Component {
   }
 
   renderExpenseView = ({ match }) => {
-    const expenseId = parseInt(match.params.id, 10)
+    const expenseId = match.params.id
     const expense = this.state.expenses.find(e => e.id === expenseId)
     if (!expense) {
       return (

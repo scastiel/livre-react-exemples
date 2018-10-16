@@ -36,8 +36,8 @@ class Expense extends Component {
         <h2>Edit expense</h2>
         <ExpenseForm
           expense={expense}
-          onSubmit={expenseInfos => {
-            updateExpense(expenseInfos)
+          onSubmit={async expenseInfos => {
+            await updateExpense(expenseInfos)
             history.push(`/${expense.id}`)
           }}
           onCancel={() => {
