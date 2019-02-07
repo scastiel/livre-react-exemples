@@ -1,0 +1,121 @@
+html {
+  font-size: 10px;
+}
+
+body {
+  background-color: #fafafa;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+  max-width: 40rem;
+  font-size: 1.4rem;
+}
+
+* {
+  font-family: sans-serif;
+  font-weight: 300;
+  color: #303030
+}
+
+.user-banner {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.post {
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 1px 0 rgba(60,64,67,.08), 0 1px 3px 1px rgba(60,64,67,.16);
+  background-color: white;
+}
+
+.post button.comments-button {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.post-image {
+  width: 100%;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.post-footer > div {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-size: inherit;
+  background-color: #245269;
+  color: white;
+  border-style: none;
+  border-radius: .5rem;
+  padding: .5rem 1rem;
+  cursor: pointer;
+}
+
+input[type=text] {
+  border-radius: .5rem;
+  padding: .5rem 1rem;
+  border: 1px solid lightgray;
+}
+
+.create-post {
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 1px 0 rgba(60,64,67,.08), 0 1px 3px 1px rgba(60,64,67,.16);
+  background-color: white;
+  padding: 1rem;
+}
+
+form {
+  margin: 0;
+  display: flex;
+  align-items: center
+}
+
+form label {
+  margin-right: 1rem;
+}
+
+form input {
+  margin-right: 1rem;
+  flex: 1;
+}
+
+.comments-list .comment {
+  padding: 1rem;
+  border-top: 1px dotted lightgray;
+}
+
+.comments-list .comment-content {
+  font-style: italic;
+}
+
+.comments-list .comment-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: small;
+}
+
+.comments-loading,
+.comments-error-message {
+  padding: 1rem;
+  margin: 0;
+}
+
+.create-comment {
+  border-top: 1px dotted lightgray;
+  padding: 1rem;
+}

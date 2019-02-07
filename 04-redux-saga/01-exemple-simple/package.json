@@ -1,0 +1,18 @@
+{
+  "name": "01-exemple-simple",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel public/index.html"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.3"
+  },
+  "dependencies": {
+    "core-js": "^3.2.0",
+    "redux": "^4.0.4",
+    "redux-saga": "^1.0.5",
+    "regenerator-runtime": "^0.13.3"
+  }
+}

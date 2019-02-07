@@ -1,0 +1,8 @@
+type AuthenticatedUser {
+  id: String!
+  token: String!
+}
+
+extend type Mutation {
+  authenticateUser(idToken: String!): AuthenticatedUser!
+}

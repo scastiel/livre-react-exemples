@@ -1,0 +1,28 @@
+{
+  "name": "01-composants",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel public/index.html",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.14.0",
+    "jest": "^24.9.0",
+    "parcel-bundler": "^1.12.3",
+    "redux-saga-test-plan": "^4.0.0-rc.3"
+  },
+  "dependencies": {
+    "@babel/polyfill": "^7.6.0",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "redux-saga": "^1.1.1"
+  }
+}

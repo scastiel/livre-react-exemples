@@ -1,0 +1,71 @@
+html {
+  --primaryColor: darkgreen;
+  --accentColor: #2fcd2f;
+  font-size: 20px;
+  font-family: sans-serif;
+}
+
+.app {
+  width: 100%;
+  max-width: 20rem;
+  border: 1px solid lightgray;
+  padding: 1rem;
+}
+
+.app form {
+  display: flex;
+  margin: 0;
+}
+
+.app input {
+  border: 1px solid var(--primaryColor);
+  flex: 1;
+  padding: 0.5em;
+  font-size: inherit;
+  border-radius: 0.5em 0 0 0.5em;
+}
+
+.app input:focus, .app button:focus {
+  outline: 0;
+  box-shadow: 0 0 1px 1px var(--accentColor);
+}
+
+.app button {
+  background-color: var(--primaryColor);
+  color: white;
+  border-width: 0;
+  padding: 0.5em;
+  font-size: inherit;
+  border-radius: 0 0.5em 0.5em 0;
+}
+
+.app h2 {
+  margin: 1em 0 0.5em;
+  padding: 0;
+  font-size: inherit;
+}
+
+.app ul {
+  padding: 0;
+  margin: 0;
+}
+
+.app li {
+  font-size: smaller;
+  list-style: none;
+  padding: 0.5em 0.5em 0.5em 0;
+  margin-left: 0.5em;
+  border-bottom: 1px solid lightgray;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
+.app .info {
+  font-style: italic;
+  font-size: smaller;
+}
+
+.app .error {
+  color: red;
+}

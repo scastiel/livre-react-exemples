@@ -1,0 +1,34 @@
+# Chemin vers le fichier de définition des types
+# disponibles dans notre API
+types: ./types.graphql
+
+functions:
+  authenticate:
+    handler:
+      code:
+        src: ./src/auth0/auth0Authentication.js
+        environment:
+          AUTH0_DOMAIN: ${env:AUTH0_DOMAIN}
+          AUTH0_CLIENT_ID: ${env:AUTH0_CLIENT_ID}
+    type: resolver
+    schema: ./src/auth0/auth0Authentication.graphql
+
+permissions:
+  # Objets
+  - operation: 'User.read'
+    authenticated: true
+  - operation: 'Post.read'
+    authenticated: true
+  - operation: 'Post.create'
+    authenticated: true
+  - operation: 'Comment.read'
+    authenticated: true
+  - operation: 'Comment.create'
+    authenticated: true
+  # Relations
+  - operation: 'UserPosts.connect'
+    authenticated: true
+  - operation: 'PostComments.connect'
+    authenticated: true
+  - operation: 'UserComments.connect'
+    authenticated: true

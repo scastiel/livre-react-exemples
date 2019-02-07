@@ -1,0 +1,16 @@
+{
+  "name": "hello-graphcool",
+  "version": "0.1.0",
+  "scripts": {
+    "deploy": "dotenv -- graphcool deploy",
+    "playground": "graphcool playground"
+  },
+  "dependencies": {
+    "graphcool-lib": "^0.1.4",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.6.0"
+  },
+  "devDependencies": {
+    "dotenv-cli": "^2.0.1"
+  }
+}
